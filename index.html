@@ -14,8 +14,8 @@
             --accent-orange: #FFF5E9;
             --text-main: #1C1C1E;
             --text-secondary: #8E8E93;
-            --apple-red: #FF3B30;
-            --apple-green: #34C759;
+            --apple-red: #FF3B30;   /* 红色：回本涨幅 */
+            --apple-green: #34C759; /* 绿色：浮亏金额 */
         }
 
         body {
@@ -42,7 +42,7 @@
             align-items: center;
             margin-bottom: 25px;
         }
-        .header h1 { font-size: 24px; font-weight: 700; margin: 0; letter-spacing: -0.5px; }
+        .header h1 { font-size: 24px; font-weight: 800; margin: 0; letter-spacing: -0.5px; }
 
         .input-section { margin-bottom: 20px; }
         .label {
@@ -50,7 +50,7 @@
             color: var(--text-secondary);
             margin-bottom: 10px;
             display: block;
-            font-weight: 500;
+            font-weight: 600;
         }
         input, select {
             width: 100%;
@@ -70,6 +70,7 @@
             gap: 16px;
         }
 
+        /* 橙色策略配置区 */
         .plan-box {
             background: var(--accent-orange);
             padding: 20px;
@@ -78,7 +79,7 @@
             margin-bottom: 25px;
         }
         .plan-box input, .plan-box select { background: #FFFFFF; }
-        .plan-box .label { color: #A27E5A; font-weight: 600; }
+        .plan-box .label { color: #A27E5A; }
 
         .btn-calc {
             background: var(--btn-light-blue);
@@ -99,8 +100,11 @@
             font-size: 13px;
             color: var(--text-secondary);
             cursor: pointer;
+            text-decoration: underline;
+            text-underline-offset: 4px;
         }
 
+        /* 结果展示卡片 */
         .res-card {
             background: #F9F9FB;
             border-radius: 22px;
@@ -112,15 +116,16 @@
             gap: 12px;
         }
         .res-header { display: flex; justify-content: space-between; align-items: center; }
-        .step-tag { background: var(--primary-blue); color: white; padding: 3px 10px; border-radius: 8px; font-size: 12px; font-weight: 700; }
-        .rise-tag { color: var(--apple-red); font-weight: 700; font-size: 14px; }
+        .step-tag { background: var(--primary-blue); color: white; padding: 4px 10px; border-radius: 8px; font-size: 12px; font-weight: 700; }
+        .rise-tag { color: var(--apple-red); font-weight: 800; font-size: 15px; }
         
         .res-body { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; border-bottom: 1px dashed #DDD; padding-bottom: 12px; }
-        .val-group .v-label { font-size: 11px; color: var(--text-secondary); display: block; margin-bottom: 2px; }
-        .val-group .v-main { font-size: 17px; font-weight: 700; }
+        .val-group .v-label { font-size: 11px; color: var(--text-secondary); display: block; margin-bottom: 3px; }
+        .val-group .v-main { font-size: 18px; font-weight: 700; }
         
         .res-footer { font-size: 12px; color: var(--text-secondary); display: flex; flex-direction: column; gap: 6px; }
         .loss-text { color: var(--apple-green); font-weight: 600; font-size: 13px; }
+        .max-warning { color: #8E8E93; font-size: 12px; text-align: center; margin-top: 15px; }
     </style>
 </head>
 <body>
@@ -128,16 +133,16 @@
 <div class="app-container">
     <div class="header">
         <h1>基金加仓计划</h1>
-        <div class="theme-icon">🌗</div>
+        <div class="theme-icon">📊</div>
     </div>
 
-    <!-- 1. 原持仓成本 -->
+    <!-- 1. 持仓均价 -->
     <div class="input-section">
-        <span class="label">1. 原持仓成本价格 (基准点)</span>
-        <input type="number" id="baseCost" value="1.2000" step="0.0001">
+        <span class="label">1. 原持仓成本价格 (基准锚点)</span>
+        <input type="number" id="baseCost" value="1.0000" step="0.0001">
     </div>
 
-    <!-- 2 & 3 持有总额与当前净值 -->
+    <!-- 2 & 3 持有额与当前价 -->
     <div class="grid-2 input-section">
         <div>
             <span class="label">2. 当前持有总额 (元)</span>
@@ -145,24 +150,24 @@
         </div>
         <div>
             <span class="label">3. 现在的价格</span>
-            <input type="number" id="basePrice" value="1.1500" step="0.0001">
+            <input type="number" id="basePrice" value="0.9500" step="0.0001">
         </div>
     </div>
 
-    <!-- 计划加仓策略 -->
+    <!-- 策略配置 -->
     <div class="plan-box">
         <div class="grid-2">
             <div>
-                <span class="label">4. 计划加仓金额</span>
+                <span class="label">4. 计划单笔加仓</span>
                 <input type="number" id="firstAdd" value="2000">
             </div>
             <div>
-                <span class="label">5. 每跌多少加仓 %</span>
+                <span class="label">5. 成本每跌加仓 %</span>
                 <input type="number" id="dropPercent" value="5">
             </div>
         </div>
         <div style="margin-top: 15px;">
-            <span class="label">加仓金额递增模式</span>
+            <span class="label">金额增长倍数</span>
             <select id="investMode">
                 <option value="1.0">固定金额 (1.0x)</option>
                 <option value="1.5">稳健增量 (1.5x)</option>
@@ -171,8 +176,9 @@
         </div>
     </div>
 
-    <button class="btn-calc" onclick="runPlan()">开始加仓计划模拟</button>
-    <div class="footer-link" onclick="location.reload()">🗑️ 清空历史数据</div>
+    <button class="btn-calc" onclick="runPlan()">开始极端行情模拟</button>
+    <div class="footer-link" onclick="location.reload()">清空数据并重置</div>
+
     <div id="resultsArea" style="margin-top:20px"></div>
 </div>
 
@@ -185,8 +191,8 @@
         const firstAdd = parseFloat(document.getElementById('firstAdd').value);
         const dropPercent = parseFloat(document.getElementById('dropPercent').value) / 100;
 
-        if(!baseCost || !baseAmount || !basePrice || !firstAdd) {
-            alert("请完整填写数据");
+        if(!baseCost || !baseAmount || !firstAdd || !dropPercent) {
+            alert("请填入有效的精算数据");
             return;
         }
 
@@ -195,16 +201,21 @@
         let nextAddMoney = firstAdd;
 
         const resultsArea = document.getElementById('resultsArea');
-        resultsArea.innerHTML = `<span class="label">📉 按照成本价阶梯下跌模拟：</span>`;
+        resultsArea.innerHTML = `<span class="label" style="color:var(--text-main)">📉 模拟至最大 80% 跌幅：</span>`;
 
-        // 核心逻辑：以 baseCost 为基准，每跌 dropPercent 触发一次
-        for (let i = 1; i <= 6; i++) {
-            // 触发价 = 成本价 * (1 - 跌幅% * 阶数)
-            let nextPrice = baseCost * (1 - (dropPercent * i));
+        // 逻辑：跌幅不超过 80%
+        let currentDrop = 0;
+        let step = 1;
+
+        while (currentDrop < 0.80) {
+            currentDrop += dropPercent;
+            if (currentDrop > 0.80) break; // 强制截断在80%
+
+            let nextPrice = baseCost * (1 - currentDrop);
             
-            // 如果触发价高于当前价格，说明该阶梯已经“错过”或者已经在亏损区间，模拟仍会显示其影响
-            if (i > 1) nextAddMoney *= ratio;
+            if (step > 1) nextAddMoney *= ratio;
 
+            // 核心计算
             totalShares += (nextAddMoney / nextPrice);
             totalAmount += nextAddMoney;
             
@@ -216,12 +227,12 @@
             resultsArea.innerHTML += `
                 <div class="res-card">
                     <div class="res-header">
-                        <span class="step-tag">成本价跌 ${(dropPercent*i*100).toFixed(0)}%</span>
+                        <span class="step-tag">成本价跌 ${(currentDrop * 100).toFixed(0)}%</span>
                         <span class="rise-tag">需涨 ${needRise}% 回本</span>
                     </div>
                     <div class="res-body">
                         <div class="val-group">
-                            <span class="v-label">计划买入价</span>
+                            <span class="v-label">买入触发价</span>
                             <span class="v-main">${nextPrice.toFixed(4)}</span>
                         </div>
                         <div class="val-group" style="text-align:right">
@@ -230,12 +241,18 @@
                         </div>
                     </div>
                     <div class="res-footer">
-                        <span>本笔投入: <b>¥${Math.round(nextAddMoney).toLocaleString()}</b> &nbsp;|&nbsp; 累计总额: <b>¥${Math.round(totalAmount).toLocaleString()}</b></span>
-                        <span class="loss-text">该位预估浮亏: -¥${Math.abs(Math.round(currentTotalLoss)).toLocaleString()}</span>
+                        <span>本笔投入: <b>¥${Math.round(nextAddMoney).toLocaleString()}</b> &nbsp;|&nbsp; 累计本金: <b>¥${Math.round(totalAmount).toLocaleString()}</b></span>
+                        <span class="loss-text">此时账户预估亏损: -¥${Math.abs(Math.round(currentTotalLoss)).toLocaleString()}</span>
                     </div>
                 </div>
             `;
+            step++;
+            
+            // 安全阀：防止死循环（极端小步长）
+            if(step > 40) break;
         }
+
+        resultsArea.innerHTML += `<div class="max-warning">—— 已到达设定的 80% 最大模拟深度 ——</div>`;
         resultsArea.scrollIntoView({ behavior: 'smooth' });
     }
 </script>
