@@ -14,17 +14,33 @@
             --accent-orange: #FFF5E9;
             --text-main: #1C1C1E;
             --text-secondary: #8E8E93;
-            --apple-red: #FF3B30;   /* 红色：回本涨幅 */
-            --apple-green: #34C759; /* 绿色：浮亏金额 */
+            --apple-red: #FF3B30;
+            --apple-green: #34C759;
+            --border-color: #EEEEEE;
+        }
+
+        /* 深色模式变量 */
+        [data-theme='dark'] {
+            --bg-color: #000000;
+            --card-bg: #1C1C1E;
+            --input-bg: #2C2C2E;
+            --primary-blue: #0A84FF;
+            --btn-light-blue: #262629;
+            --accent-orange: #2C2115;
+            --text-main: #FFFFFF;
+            --text-secondary: #AEAEB2;
+            --border-color: #38383A;
         }
 
         body {
             font-family: -apple-system, "SF Pro Text", "PingFang SC", sans-serif;
             background-color: var(--bg-color);
+            color: var(--text-main);
             margin: 0;
             padding: 20px;
             display: flex;
             justify-content: center;
+            transition: background-color 0.3s ease;
         }
 
         .app-container {
@@ -33,7 +49,8 @@
             background: var(--card-bg);
             border-radius: 32px;
             padding: 28px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.04);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
         }
 
         .header {
@@ -43,6 +60,15 @@
             margin-bottom: 25px;
         }
         .header h1 { font-size: 24px; font-weight: 800; margin: 0; letter-spacing: -0.5px; }
+
+        /* 夜间模式切换按钮 */
+        .theme-toggle {
+            cursor: pointer;
+            font-size: 24px;
+            user-select: none;
+            transition: transform 0.3s;
+        }
+        .theme-toggle:active { transform: scale(0.8); }
 
         .input-section { margin-bottom: 20px; }
         .label {
@@ -62,24 +88,21 @@
             box-sizing: border-box;
             outline: none;
             color: var(--text-main);
+            transition: background-color 0.3s;
         }
 
-        .grid-2 {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px;
-        }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 
-        /* 橙色策略配置区 */
+        /* 策略区（橙色） */
         .plan-box {
             background: var(--accent-orange);
             padding: 20px;
             border-radius: 22px;
-            border: 1px solid #FFE0C2;
+            border: 1px solid rgba(255, 165, 0, 0.2);
             margin-bottom: 25px;
         }
-        .plan-box input, .plan-box select { background: #FFFFFF; }
-        .plan-box .label { color: #A27E5A; }
+        .plan-box input, .plan-box select { background: var(--card-bg); }
+        .plan-box .label { color: #D68F3F; }
 
         .btn-calc {
             background: var(--btn-light-blue);
@@ -95,22 +118,13 @@
         }
         .btn-calc:active { opacity: 0.7; transform: scale(0.98); }
 
-        .footer-link {
-            text-align: center;
-            font-size: 13px;
-            color: var(--text-secondary);
-            cursor: pointer;
-            text-decoration: underline;
-            text-underline-offset: 4px;
-        }
-
         /* 结果展示卡片 */
         .res-card {
-            background: #F9F9FB;
+            background: var(--input-bg);
             border-radius: 22px;
             padding: 20px;
             margin-top: 15px;
-            border: 0.5px solid #EEE;
+            border: 1px solid var(--border-color);
             display: flex;
             flex-direction: column;
             gap: 12px;
@@ -119,33 +133,34 @@
         .step-tag { background: var(--primary-blue); color: white; padding: 4px 10px; border-radius: 8px; font-size: 12px; font-weight: 700; }
         .rise-tag { color: var(--apple-red); font-weight: 800; font-size: 15px; }
         
-        .res-body { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; border-bottom: 1px dashed #DDD; padding-bottom: 12px; }
+        .res-body { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; border-bottom: 1px dashed var(--border-color); padding-bottom: 12px; }
         .val-group .v-label { font-size: 11px; color: var(--text-secondary); display: block; margin-bottom: 3px; }
         .val-group .v-main { font-size: 18px; font-weight: 700; }
         
         .res-footer { font-size: 12px; color: var(--text-secondary); display: flex; flex-direction: column; gap: 6px; }
         .loss-text { color: var(--apple-green); font-weight: 600; font-size: 13px; }
-        .max-warning { color: #8E8E93; font-size: 12px; text-align: center; margin-top: 15px; }
+
+        .footer-link { text-align: center; font-size: 13px; color: var(--text-secondary); cursor: pointer; }
     </style>
 </head>
-<body>
+<body data-theme="light">
 
 <div class="app-container">
     <div class="header">
         <h1>基金加仓计划</h1>
-        <div class="theme-icon">📊</div>
+        <div id="themeBtn" class="theme-toggle" onclick="toggleTheme()">🌗</div>
     </div>
 
-    <!-- 1. 持仓均价 -->
+    <!-- 1. 成本均价 -->
     <div class="input-section">
-        <span class="label">1. 原持仓成本价格 (基准锚点)</span>
+        <span class="label">1. 原持仓成本价格 (锚点)</span>
         <input type="number" id="baseCost" value="1.0000" step="0.0001">
     </div>
 
-    <!-- 2 & 3 持有额与当前价 -->
+    <!-- 2 & 3 数据项 -->
     <div class="grid-2 input-section">
         <div>
-            <span class="label">2. 当前持有总额 (元)</span>
+            <span class="label">2. 持有总额 (元)</span>
             <input type="number" id="baseAmount" value="10000">
         </div>
         <div>
@@ -154,11 +169,11 @@
         </div>
     </div>
 
-    <!-- 策略配置 -->
+    <!-- 4 & 5 橙色策略区 -->
     <div class="plan-box">
         <div class="grid-2">
             <div>
-                <span class="label">4. 计划单笔加仓</span>
+                <span class="label">4. 计划加仓金额</span>
                 <input type="number" id="firstAdd" value="2000">
             </div>
             <div>
@@ -167,7 +182,7 @@
             </div>
         </div>
         <div style="margin-top: 15px;">
-            <span class="label">金额增长倍数</span>
+            <span class="label">加仓递增模式</span>
             <select id="investMode">
                 <option value="1.0">固定金额 (1.0x)</option>
                 <option value="1.5">稳健增量 (1.5x)</option>
@@ -176,13 +191,22 @@
         </div>
     </div>
 
-    <button class="btn-calc" onclick="runPlan()">开始极端行情模拟</button>
-    <div class="footer-link" onclick="location.reload()">清空数据并重置</div>
+    <button class="btn-calc" onclick="runPlan()">生成精算模拟方案</button>
+    <div class="footer-link" onclick="location.reload()">🔄 重置所有数据</div>
 
     <div id="resultsArea" style="margin-top:20px"></div>
 </div>
 
 <script>
+    // 切换主题逻辑
+    function toggleTheme() {
+        const body = document.body;
+        const currentTheme = body.getAttribute('data-theme');
+        const nextTheme = currentTheme === 'light' ? 'dark' : 'light';
+        body.setAttribute('data-theme', nextTheme);
+        document.getElementById('themeBtn').innerText = nextTheme === 'light' ? '🌗' : '☀️';
+    }
+
     function runPlan() {
         const baseCost = parseFloat(document.getElementById('baseCost').value);
         const baseAmount = parseFloat(document.getElementById('baseAmount').value);
@@ -192,8 +216,7 @@
         const dropPercent = parseFloat(document.getElementById('dropPercent').value) / 100;
 
         if(!baseCost || !baseAmount || !firstAdd || !dropPercent) {
-            alert("请填入有效的精算数据");
-            return;
+            alert("请完整填写数据"); return;
         }
 
         let totalAmount = baseAmount;
@@ -201,21 +224,18 @@
         let nextAddMoney = firstAdd;
 
         const resultsArea = document.getElementById('resultsArea');
-        resultsArea.innerHTML = `<span class="label" style="color:var(--text-main)">📉 模拟至最大 80% 跌幅：</span>`;
+        resultsArea.innerHTML = `<span class="label" style="color:var(--text-main)">📉 成本阶梯下跌模拟 (上限 80%)：</span>`;
 
-        // 逻辑：跌幅不超过 80%
         let currentDrop = 0;
         let step = 1;
 
         while (currentDrop < 0.80) {
             currentDrop += dropPercent;
-            if (currentDrop > 0.80) break; // 强制截断在80%
+            if (currentDrop > 0.801) break; // 浮点数安全截断
 
             let nextPrice = baseCost * (1 - currentDrop);
-            
             if (step > 1) nextAddMoney *= ratio;
 
-            // 核心计算
             totalShares += (nextAddMoney / nextPrice);
             totalAmount += nextAddMoney;
             
@@ -232,27 +252,23 @@
                     </div>
                     <div class="res-body">
                         <div class="val-group">
-                            <span class="v-label">买入触发价</span>
+                            <span class="v-label">触发买入价</span>
                             <span class="v-main">${nextPrice.toFixed(4)}</span>
                         </div>
                         <div class="val-group" style="text-align:right">
-                            <span class="v-label">加仓后新均价</span>
+                            <span class="v-label">补后新成本</span>
                             <span class="v-main" style="color:var(--primary-blue)">${newCost.toFixed(4)}</span>
                         </div>
                     </div>
                     <div class="res-footer">
-                        <span>本笔投入: <b>¥${Math.round(nextAddMoney).toLocaleString()}</b> &nbsp;|&nbsp; 累计本金: <b>¥${Math.round(totalAmount).toLocaleString()}</b></span>
-                        <span class="loss-text">此时账户预估亏损: -¥${Math.abs(Math.round(currentTotalLoss)).toLocaleString()}</span>
+                        <span>单笔补仓: <b>¥${Math.round(nextAddMoney).toLocaleString()}</b> | 累计: <b>¥${Math.round(totalAmount).toLocaleString()}</b></span>
+                        <span class="loss-text">该阶预估浮亏: -¥${Math.abs(Math.round(currentTotalLoss)).toLocaleString()}</span>
                     </div>
                 </div>
             `;
             step++;
-            
-            // 安全阀：防止死循环（极端小步长）
             if(step > 40) break;
         }
-
-        resultsArea.innerHTML += `<div class="max-warning">—— 已到达设定的 80% 最大模拟深度 ——</div>`;
         resultsArea.scrollIntoView({ behavior: 'smooth' });
     }
 </script>
