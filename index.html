@@ -3,268 +3,237 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Fund Flow Pro</title>
+    <title>基金加仓计划</title>
     <style>
         :root {
-            --ios-bg: #F2F2F7;
-            --ios-card: #FFFFFF;
-            --ios-blue: #007AFF;
-            --ios-gray: #8E8E93;
-            --ios-red: #FF3B30;
-            --ios-green: #34C759;
-            --ios-sep: #C6C6C8;
+            --bg-color: #F4F5F7;
+            --card-bg: #FFFFFF;
+            --input-bg: #F0F2F5;
+            --primary-blue: #007AFF;
+            --btn-light-blue: #E8F2FF;
+            --accent-orange: #FFF5E9;
+            --text-main: #1C1C1E;
+            --text-secondary: #8E8E93;
         }
 
         body {
-            font-family: -apple-system, system-ui, sans-serif;
-            background-color: var(--ios-bg);
-            color: #000;
+            font-family: -apple-system, "SF Pro Text", "PingFang SC", sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
             margin: 0;
-            padding: env(safe-area-inset-top) 16px 40px;
-            -webkit-tap-highlight-color: transparent;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
         }
 
-        /* 顶部标题区 - 典型的苹果大标题 */
+        .app-container {
+            width: 100%;
+            max-width: 450px;
+            background: var(--card-bg);
+            border-radius: 32px;
+            padding: 28px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.04);
+        }
+
+        /* 顶部标题区 */
         .header {
-            margin: 40px 10px 24px;
-        }
-        .header h1 {
-            font-size: 34px;
-            font-weight: 800;
-            margin: 0;
-            letter-spacing: -1px;
-        }
-        .header p {
-            color: var(--ios-gray);
-            font-size: 15px;
-            margin-top: 4px;
-        }
-
-        .section-label {
-            font-size: 13px;
-            color: var(--ios-gray);
-            margin: 0 0 8px 12px;
-            text-transform: uppercase;
-            letter-spacing: 0.3px;
-        }
-
-        /* 列表容器 - 模拟 iOS 设置页面 */
-        .ios-list {
-            background: var(--ios-card);
-            border-radius: 10px;
-            margin-bottom: 24px;
-            overflow: hidden;
-        }
-
-        .row {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 12px 16px;
-            min-height: 44px;
-            position: relative;
+            margin-bottom: 25px;
         }
+        .header h1 { font-size: 24px; font-weight: 700; margin: 0; letter-spacing: -0.5px; }
+        .theme-icon { font-size: 22px; }
 
-        .row:not(:last-child)::after {
-            content: "";
-            position: absolute;
-            bottom: 0;
-            right: 0;
-            left: 16px;
-            height: 0.5px;
-            background-color: var(--ios-sep);
+        /* 输入布局 */
+        .input-section { margin-bottom: 20px; }
+        .label {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-bottom: 10px;
+            display: block;
+            font-weight: 500;
         }
-
-        .row label {
-            font-size: 17px;
-            font-weight: 400;
-        }
-
         input, select {
-            border: none;
-            background: none;
-            font-size: 17px;
-            color: var(--ios-blue);
-            text-align: right;
-            outline: none;
-            width: 60%;
-            padding: 0;
-        }
-
-        select {
-            appearance: none;
-            padding-right: 4px;
-        }
-
-        /* 现代化的操作按钮 */
-        .action-btn {
-            background-color: var(--ios-blue);
-            color: white;
-            border: none;
-            border-radius: 12px;
             width: 100%;
-            padding: 16px;
-            font-size: 17px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: opacity 0.2s;
-        }
-        .action-btn:active { opacity: 0.7; }
-
-        /* 结果卡片 - 采用更加立体的视觉 */
-        .res-card {
-            background: var(--ios-card);
+            background: var(--input-bg);
+            border: none;
             border-radius: 14px;
             padding: 16px;
-            margin-top: 12px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            font-size: 16px;
+            box-sizing: border-box;
+            outline: none;
+            color: var(--text-main);
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        /* 橙色计划加仓区 */
+        .plan-box {
+            background: var(--accent-orange);
+            padding: 20px;
+            border-radius: 22px;
+            border: 1px solid #FFE0C2;
+            margin-bottom: 25px;
+        }
+        .plan-box input, .plan-box select { background: #FFFFFF; }
+        .plan-box .label { color: #A27E5A; font-weight: 600; }
+
+        /* 按钮 */
+        .btn-calc {
+            background: var(--btn-light-blue);
+            color: var(--primary-blue);
+            width: 100%;
+            border: none;
+            border-radius: 16px;
+            padding: 18px;
+            font-size: 17px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+        .btn-calc:active { opacity: 0.7; transform: scale(0.98); }
+
+        .footer-link {
+            text-align: center;
+            font-size: 13px;
+            color: var(--text-secondary);
+            cursor: pointer;
+        }
+
+        /* 结果卡片 */
+        .res-card {
+            background: #F9F9FB;
+            border-radius: 20px;
+            padding: 18px;
+            margin-top: 15px;
+            border: 0.5px solid #EEE;
             display: flex;
             flex-direction: column;
             gap: 12px;
         }
-
-        .res-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-        }
-
-        .res-title { font-weight: 700; font-size: 17px; }
-        .res-price { color: var(--ios-gray); font-size: 13px; margin-top: 2px; }
-
-        .res-main {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
-            padding-top: 8px;
-            border-top: 0.5px solid var(--ios-bg);
-        }
-
-        .cost-box .label { font-size: 12px; color: var(--ios-gray); display: block; }
-        .cost-box .val { font-size: 24px; font-weight: 700; color: var(--ios-blue); letter-spacing: -0.5px; }
-
-        .tag-rise {
-            background: var(--ios-bg);
-            color: var(--ios-red);
-            padding: 6px 12px;
-            border-radius: 8px;
-            font-size: 13px;
-            font-weight: 700;
-        }
-
-        .total-strip {
-            font-size: 13px;
-            color: var(--ios-gray);
-            background: #F9F9F9;
-            padding: 8px 12px;
-            border-radius: 6px;
-            text-align: center;
-        }
+        .res-header { display: flex; justify-content: space-between; align-items: center; }
+        .step-tag { background: var(--primary-blue); color: white; padding: 2px 8px; border-radius: 6px; font-size: 11px; font-weight: 700; }
+        .rise-tag { color: #FF3B30; font-weight: 700; font-size: 14px; }
+        
+        .res-body { display: flex; justify-content: space-between; align-items: flex-end; }
+        .val-group .v-label { font-size: 11px; color: var(--text-secondary); display: block; margin-bottom: 2px; }
+        .val-group .v-main { font-size: 18px; font-weight: 700; }
+        
+        .res-footer { font-size: 12px; color: var(--text-secondary); padding-top: 8px; border-top: 1px dashed #DDD; }
     </style>
 </head>
 <body>
 
-<div class="header">
-    <h1>补仓计划</h1>
-    <p>投资策略模拟器</p>
-</div>
+<div class="app-container">
+    <div class="header">
+        <h1>基金加仓计划</h1>
+        <div class="theme-icon">🌗</div>
+    </div>
 
-<div class="section-label">当前持仓信息</div>
-<div class="ios-list">
-    <div class="row">
-        <label>成本均价</label>
+    <!-- 1. 持仓均价 -->
+    <div class="input-section">
+        <span class="label">1. 原持仓成本价格</span>
         <input type="number" id="baseCost" value="1.2000" step="0.0001">
     </div>
-    <div class="row">
-        <label>持有总额</label>
-        <input type="number" id="baseAmount" value="10000">
+
+    <!-- 2 & 3 盈亏与价格 -->
+    <div class="grid-2 input-section">
+        <div>
+            <span class="label">2. 当前持有总额 (元)</span>
+            <input type="number" id="baseAmount" value="10000">
+        </div>
+        <div>
+            <span class="label">3. 现在的价格</span>
+            <input type="number" id="basePrice" value="1.0500" step="0.0001">
+        </div>
     </div>
-    <div class="row">
-        <label>当前净值</label>
-        <input type="number" id="basePrice" value="1.0500" step="0.0001">
+
+    <!-- 4 & 5 计划加仓策略 -->
+    <div class="plan-box">
+        <div class="grid-2">
+            <div>
+                <span class="label">4. 首笔加仓金额</span>
+                <input type="number" id="firstAdd" value="2000">
+            </div>
+            <div>
+                <span class="label">5. 触发跌幅 %</span>
+                <input type="number" id="dropPercent" value="5">
+            </div>
+        </div>
+        <div style="margin-top: 15px;">
+            <span class="label">加仓递增模式</span>
+            <select id="investMode">
+                <option value="1.0">固定金额 (1.0x)</option>
+                <option value="1.5">稳健增量 (1.5x)</option>
+                <option value="2.0">激进倍投 (2.0x)</option>
+            </select>
+        </div>
     </div>
+
+    <button class="btn-calc" onclick="runPlan()">开始加仓计划模拟</button>
+
+    <div class="footer-link" onclick="location.reload()">🗑️ 清空历史数据</div>
+
+    <div id="resultsArea" style="margin-top:20px"></div>
 </div>
-
-<div class="section-label">策略配置</div>
-<div class="ios-list">
-    <div class="row">
-        <label>加仓模式</label>
-        <select id="investMode">
-            <option value="fixed">固定金额</option>
-            <option value="double">2.0x 进取倍投</option>
-            <option value="triple">1.5x 稳健增量</option>
-        </select>
-    </div>
-    <div class="row">
-        <label>首笔补仓</label>
-        <input type="number" id="firstAdd" value="2000">
-    </div>
-    <div class="row">
-        <label>跌幅触发 %</label>
-        <input type="number" id="dropPercent" value="5">
-    </div>
-</div>
-
-<button class="action-btn" onclick="runStrategy()">生成执行方案</button>
-
-<div id="resultsList" style="margin-top: 30px;"></div>
 
 <script>
-function runStrategy() {
-    const baseCost = parseFloat(document.getElementById('baseCost').value);
-    const baseAmount = parseFloat(document.getElementById('baseAmount').value);
-    const basePrice = parseFloat(document.getElementById('basePrice').value);
-    const mode = document.getElementById('investMode').value;
-    const firstAdd = parseFloat(document.getElementById('firstAdd').value);
-    const dropPercent = parseFloat(document.getElementById('dropPercent').value) / 100;
+    function runPlan() {
+        const baseCost = parseFloat(document.getElementById('baseCost').value);
+        const baseAmount = parseFloat(document.getElementById('baseAmount').value);
+        const basePrice = parseFloat(document.getElementById('basePrice').value);
+        const ratio = parseFloat(document.getElementById('investMode').value);
+        const firstAdd = parseFloat(document.getElementById('firstAdd').value);
+        const dropPercent = parseFloat(document.getElementById('dropPercent').value) / 100;
 
-    let totalAmount = baseAmount;
-    let totalShares = baseAmount / baseCost;
-    let nextPrice = basePrice;
-    let nextAddMoney = firstAdd;
+        let totalAmount = baseAmount;
+        let totalShares = baseAmount / baseCost;
+        let nextPrice = basePrice;
+        let nextAddMoney = firstAdd;
 
-    const list = document.getElementById('resultsList');
-    list.innerHTML = `<div class="section-label">模拟阶梯方案 (5阶)</div>`;
+        const resultsArea = document.getElementById('resultsArea');
+        resultsArea.innerHTML = `<span class="label">📉 模拟下跌行情 (共 5 阶)：</span>`;
 
-    for (let i = 1; i <= 5; i++) {
-        nextPrice = nextPrice * (1 - dropPercent);
-        if (i > 1) {
-            if (mode === 'double') nextAddMoney *= 2;
-            if (mode === 'triple') nextAddMoney *= 1.5;
+        for (let i = 1; i <= 5; i++) {
+            nextPrice = nextPrice * (1 - dropPercent);
+            if (i > 1) nextAddMoney *= ratio;
+
+            totalShares += (nextAddMoney / nextPrice);
+            totalAmount += nextAddMoney;
+            
+            let newCost = totalAmount / totalShares;
+            let needRise = ((newCost - nextPrice) / nextPrice * 100).toFixed(1);
+
+            resultsArea.innerHTML += `
+                <div class="res-card">
+                    <div class="res-header">
+                        <span class="step-tag">第 ${i} 阶计划</span>
+                        <span class="rise-tag">需涨 ${needRise}% 回本</span>
+                    </div>
+                    <div class="res-body">
+                        <div class="val-group">
+                            <span class="v-label">买入触发价</span>
+                            <span class="v-main">${nextPrice.toFixed(4)}</span>
+                        </div>
+                        <div class="val-group" style="text-align:right">
+                            <span class="v-label">加仓后新均价</span>
+                            <span class="v-main" style="color:var(--primary-blue)">${newCost.toFixed(4)}</span>
+                        </div>
+                    </div>
+                    <div class="res-footer">
+                        单笔投入: <b>¥${Math.round(nextAddMoney).toLocaleString()}</b> &nbsp;|&nbsp; 
+                        累计总额: <b>¥${Math.round(totalAmount).toLocaleString()}</b>
+                    </div>
+                </div>
+            `;
         }
-        totalShares += (nextAddMoney / nextPrice);
-        totalAmount += nextAddMoney;
-        let newAvgCost = totalAmount / totalShares;
-        let needRise = ((newAvgCost - nextPrice) / nextPrice * 100).toFixed(1);
-
-        list.innerHTML += `
-            <div class="res-card">
-                <div class="res-header">
-                    <div>
-                        <div class="res-title">第 ${i} 阶段补仓</div>
-                        <div class="res-price">触发价格: ${nextPrice.toFixed(4)}</div>
-                    </div>
-                    <div class="tag-rise" style="color:${needRise > 10 ? 'var(--ios-red)' : 'var(--ios-green)'}">
-                        回本需涨 ${needRise}%
-                    </div>
-                </div>
-                <div class="res-main">
-                    <div class="cost-box">
-                        <span class="label">补仓后新成本</span>
-                        <span class="val">${newAvgCost.toFixed(4)}</span>
-                    </div>
-                    <div style="text-align:right">
-                        <span class="label" style="margin-bottom:4px">单笔补仓</span>
-                        <span style="font-weight:600; font-size:17px">¥${Math.round(nextAddMoney).toLocaleString()}</span>
-                    </div>
-                </div>
-                <div class="total-strip">
-                    该阶段累计投资总额：¥${Math.round(totalAmount).toLocaleString()}
-                </div>
-            </div>
-        `;
+        resultsArea.scrollIntoView({ behavior: 'smooth' });
     }
-}
 </script>
 
 </body>
