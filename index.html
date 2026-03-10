@@ -12,6 +12,7 @@
             --text-main: #1C1C1E;
             --text-secondary: #8E8E93;
             --ios-sep: #E5E5E7;
+            --title-weight: 900;
         }
 
         [data-theme='dark'] {
@@ -24,7 +25,7 @@
         }
 
         body {
-            font-family: -apple-system, "SF Pro Text", "PingFang SC", sans-serif;
+            font-family: -apple-system, "SF Pro Display", "SF Pro Text", "PingFang SC", sans-serif;
             background-color: var(--bg-color);
             margin: 0;
             padding: 0;
@@ -32,110 +33,112 @@
             flex-direction: column;
             align-items: center;
             min-height: 100vh;
+            transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             -webkit-tap-highlight-color: transparent;
         }
 
         .container {
             width: 100%;
             max-width: 420px;
-            padding-bottom: 100px;
+            padding-bottom: 50px;
         }
 
-        .header {
-            padding: 60px 24px 30px;
+        /* ✨ 优化后的头部样式 ✨ */
+        .header-wrapper {
+            padding: 80px 24px 40px; /* 增加了顶部的呼吸空间 */
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline; /* 底部对齐，视觉更稳 */
         }
-        .header h1 { font-size: 28px; font-weight: 800; margin: 0; letter-spacing: -0.5px; color: var(--text-main); }
-        .header p { color: var(--text-secondary); font-size: 14px; margin-top: 5px; }
 
+        .header-text h1 { 
+            font-size: 36px; /* 略微放大 */
+            font-weight: var(--title-weight); 
+            margin: 0; 
+            letter-spacing: -1.5px; /* 更紧凑的苹果字间距 */
+            color: var(--text-main);
+            line-height: 1.1;
+        }
+
+        .header-text p { 
+            color: var(--text-secondary); 
+            font-size: 13px; 
+            margin-top: 8px; 
+            text-transform: uppercase; /* 副标题大写化 */
+            letter-spacing: 1px; /* 增加字母间距，显高级 */
+            font-weight: 600;
+        }
+
+        .theme-btn {
+            font-size: 22px;
+            cursor: pointer;
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            user-select: none;
+            padding: 8px;
+            margin-right: -8px; /* 抵消内边距，确保视觉右对齐 */
+        }
+        .theme-btn:active { transform: scale(0.8) rotate(15deg); }
+
+        /* 卡片列表布局 */
         .menu-list {
-            padding: 0 16px;
+            padding: 0 16px; 
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 14px;
         }
 
-        /* ✨ 核心修正：确保所有卡片基础样式一致 ✨ */
         .menu-card {
             background: var(--card-bg);
-            border-radius: 18px;
-            padding: 16px;
+            border-radius: 22px; /* 圆角略微增大，更柔和 */
+            padding: 20px;
             text-decoration: none;
             color: inherit;
             display: flex;
             align-items: center;
             gap: 16px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
-            transition: all 0.2s;
-            /* 移除之前的 opacity: 0.6 */
+            box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+            transition: all 0.25s ease;
         }
 
         .menu-card:active {
-            transform: scale(0.98);
+            transform: scale(0.96);
             background-color: var(--ios-sep);
         }
 
         .card-icon {
-            width: 48px;
-            height: 48px;
-            border-radius: 12px;
+            width: 50px;
+            height: 50px;
+            border-radius: 13px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 24px;
+            font-size: 26px;
             flex-shrink: 0;
+            box-shadow: inset 0 0 0 0.5px rgba(0,0,0,0.1); /* 增加图标微边框 */
         }
 
         .card-content { flex: 1; }
-        .card-title { font-size: 17px; font-weight: 700; color: var(--text-main); display: block; }
-        .card-sub { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
-        .arrow { color: #C4C4C6; font-size: 14px; margin-left: 4px; }
+        .card-title { font-size: 18px; font-weight: 700; color: var(--text-main); margin-bottom: 4px; }
+        .card-sub { font-size: 13px; color: var(--text-secondary); line-height: 1.4; font-weight: 400; }
 
-        /* 底部 Tab Bar */
-        .tab-bar {
-            position: fixed;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100%;
-            max-width: 420px;
-            height: 83px;
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            display: flex;
-            justify-content: space-around;
-            padding-bottom: env(safe-area-inset-bottom);
-            border-top: 0.5px solid var(--ios-sep);
-        }
-
-        .tab-btn {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-decoration: none;
-            color: var(--text-secondary);
-            flex: 1;
-            padding-top: 8px;
-        }
-        .tab-btn.active { color: var(--primary-blue); }
-        .tab-btn span { font-size: 10px; margin-top: 4px; font-weight: 500; }
-        .tab-icon { font-size: 22px; }
+        .arrow { color: #C4C4C6; font-size: 14px; margin-left: 4px; opacity: 0.7; }
 
     </style>
 </head>
 <body data-theme="light">
 
     <div class="container">
-        <div class="header">
-            <h1>投资助手</h1>
-            <p>Smart Portfolio Planner</p>
+        <div class="header-wrapper">
+            <div class="header-text">
+                <h1>投资助手</h1>
+                <p>Smart Portfolio Planner</p>
+            </div>
+            <div id="modeBtn" class="theme-btn" onclick="toggleTheme()">🌗</div>
         </div>
 
         <div class="menu-list">
-            <!-- 1. 蓝色卡片 (最深) -->
             <a href="assets.html" class="menu-card">
-                <div class="card-icon" style="background: linear-gradient(135deg, #007AFF, #5856D6);">💰</div>
+                <div class="card-icon" style="background: linear-gradient(145deg, #007AFF, #5856D6);">💰</div>
                 <div class="card-content">
                     <span class="card-title">总资产概览</span>
                     <span class="card-sub">管理持仓本金，查看实时盈亏明细</span>
@@ -143,9 +146,8 @@
                 <span class="arrow">〉</span>
             </a>
 
-            <!-- 2. 橙色卡片 (中等) -->
             <a href="plan.html" class="menu-card">
-                <div class="card-icon" style="background: linear-gradient(135deg, #FF9500, #FFCC00);">📊</div>
+                <div class="card-icon" style="background: linear-gradient(145deg, #FF9500, #FFCC00);">📊</div>
                 <div class="card-content">
                     <span class="card-title">基金加仓计划</span>
                     <span class="card-sub">模拟成本价下跌路径，生成分批方案</span>
@@ -153,9 +155,8 @@
                 <span class="arrow">〉</span>
             </a>
 
-            <!-- 3. 绿色卡片 (现在已恢复亮度) -->
             <a href="profit.html" class="menu-card">
-                <div class="card-icon" style="background: linear-gradient(135deg, #34C759, #4CD964);">💵</div>
+                <div class="card-icon" style="background: linear-gradient(145deg, #34C759, #4CD964);">💵</div>
                 <div class="card-content">
                     <span class="card-title">盈利预演</span>
                     <span class="card-sub">计算分批止盈路径，实现收益最大化</span>
@@ -165,7 +166,19 @@
         </div>
     </div>
 
-    <!-- 导航栏省略...内容同上 -->
+    <script>
+        function toggleTheme() {
+            const body = document.body;
+            const currentTheme = body.getAttribute('data-theme');
+            const nextTheme = currentTheme === 'light' ? 'dark' : 'light';
+            body.setAttribute('data-theme', nextTheme);
+            document.getElementById('modeBtn').innerText = nextTheme === 'light' ? '🌗' : '☀️';
+        }
 
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            document.body.setAttribute('data-theme', 'dark');
+            document.getElementById('modeBtn').innerText = '☀️';
+        }
+    </script>
 </body>
 </html>
