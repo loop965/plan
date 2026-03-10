@@ -3,139 +3,215 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>我的投资助手</title>
+    <title>投资助手</title>
     <style>
         :root {
-            --ios-bg: #F2F2F7;
-            --ios-card: #FFFFFF;
-            --ios-blue: #007AFF;
-            --ios-gray: #8E8E93;
-            --tab-bg: rgba(255, 255, 255, 0.8);
+            --bg-color: #F4F5F7;
+            --card-bg: #FFFFFF;
+            --primary-blue: #007AFF;
+            --text-main: #1C1C1E;
+            --text-secondary: #8E8E93;
+            --ios-sep: #E5E5E7;
         }
 
         [data-theme='dark'] {
-            --ios-bg: #000000;
-            --ios-card: #1C1C1E;
-            --ios-blue: #0A84FF;
-            --tab-bg: rgba(28, 28, 30, 0.8);
+            --bg-color: #000000;
+            --card-bg: #1C1C1E;
+            --primary-blue: #0A84FF;
+            --text-main: #FFFFFF;
+            --text-secondary: #8E8E93;
+            --ios-sep: #38383A;
         }
 
         body {
-            font-family: -apple-system, system-ui, sans-serif;
-            background-color: var(--ios-bg);
+            font-family: -apple-system, "SF Pro Text", "PingFang SC", sans-serif;
+            background-color: var(--bg-color);
             margin: 0;
             padding: 0;
-            padding-bottom: 90px; /* 为底栏留出空间 */
-        }
-
-        /* 顶部大标题 */
-        .header {
-            padding: 60px 20px 20px;
-        }
-        .header h1 { font-size: 34px; font-weight: 800; margin: 0; }
-
-        /* 内容卡片 */
-        .content-card {
-            background: var(--ios-card);
-            margin: 0 16px 20px;
-            padding: 20px;
-            border-radius: 20px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
             display: flex;
-            justify-content: space-between;
+            flex-direction: column;
             align-items: center;
+            min-height: 100vh;
+            transition: background-color 0.3s;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 420px;
+            padding-bottom: 100px;
+        }
+
+        /* 顶部标题区 */
+        .header {
+            padding: 60px 24px 30px;
+            text-align: left;
+        }
+        .header h1 { font-size: 28px; font-weight: 800; margin: 0; letter-spacing: -0.5px; color: var(--text-main); }
+        .header p { color: var(--text-secondary); font-size: 14px; margin-top: 5px; }
+
+        /* 统一的列表容器 */
+        .menu-list {
+            padding: 0 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        /* 统一的卡片样式 */
+        .menu-card {
+            background: var(--card-bg);
+            border-radius: 18px;
+            padding: 16px;
             text-decoration: none;
             color: inherit;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+            transition: transform 0.2s, background-color 0.2s;
         }
-        .content-card:active { opacity: 0.7; transform: scale(0.98); }
-        .card-info h3 { margin: 0; font-size: 18px; }
-        .card-info p { margin: 5px 0 0; font-size: 14px; color: var(--ios-gray); }
-        .arrow { color: var(--ios-gray); font-weight: bold; }
 
-        /* ✨ Apple 风格底栏导航 ✨ */
+        .menu-card:active {
+            transform: scale(0.98);
+            background-color: var(--ios-sep);
+        }
+
+        /* 统一的图标规格 */
+        .card-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        .card-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .card-title { 
+            font-size: 17px; 
+            font-weight: 700; 
+            color: var(--text-main);
+            margin-bottom: 2px;
+        }
+
+        .card-sub { 
+            font-size: 12px; 
+            color: var(--text-secondary); 
+            line-height: 1.3;
+        }
+
+        .arrow {
+            color: #C4C4C6;
+            font-size: 14px;
+            margin-left: 4px;
+        }
+
+        /* 底部 Tab Bar */
         .tab-bar {
             position: fixed;
             bottom: 0;
-            left: 0;
-            right: 0;
-            height: 84px; /* 包含 iPhone 底部安全区 */
-            background: var(--tab-bg);
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 420px;
+            height: 83px;
+            background: rgba(255, 255, 255, 0.85);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             display: flex;
             justify-content: space-around;
-            padding-top: 10px;
-            border-top: 0.5px solid rgba(0,0,0,0.1);
+            padding-bottom: env(safe-area-inset-bottom);
+            border-top: 0.5px solid var(--ios-sep);
             z-index: 1000;
         }
 
-        .tab-item {
+        [data-theme='dark'] .tab-bar { background: rgba(28, 28, 30, 0.85); }
+
+        .tab-btn {
             display: flex;
             flex-direction: column;
             align-items: center;
+            justify-content: center;
             text-decoration: none;
-            color: var(--ios-gray);
-            font-size: 10px;
-            font-weight: 500;
-            width: 25%;
+            color: var(--text-secondary);
+            flex: 1;
+            padding-top: 8px;
         }
 
-        .tab-item.active { color: var(--ios-blue); }
+        .tab-btn.active { color: var(--primary-blue); }
+        .tab-btn span { font-size: 10px; margin-top: 4px; font-weight: 500; }
+        .tab-icon { font-size: 22px; }
 
-        .tab-icon {
-            font-size: 24px;
-            margin-bottom: 4px;
-        }
-
-        /* 适配深色模式边框 */
-        [data-theme='dark'] .tab-bar { border-top: 0.5px solid rgba(255,255,255,0.1); }
     </style>
 </head>
 <body data-theme="light">
 
-    <div class="header">
-        <h1>探索</h1>
+    <div class="container">
+        <div class="header">
+            <h1>投资助手</h1>
+            <p>Smart Portfolio Manager</p>
+        </div>
+
+        <div class="menu-list">
+            <!-- ✨ 新增：总资产卡片 (链接至 assets.html) -->
+            <a href="assets.html" class="menu-card">
+                <div class="card-icon" style="background: linear-gradient(135deg, #007AFF, #5856D6);">💰</div>
+                <div class="card-content">
+                    <span class="card-title">总资产概览</span>
+                    <span class="card-sub">管理持仓本金，查看实时盈亏明细</span>
+                </div>
+                <span class="arrow">〉</span>
+            </a>
+
+            <!-- 计划入口 -->
+            <a href="plan.html" class="menu-card">
+                <div class="card-icon" style="background: linear-gradient(135deg, #FF9500, #FFCC00);">📊</div>
+                <div class="card-content">
+                    <span class="card-title">基金加仓计划</span>
+                    <span class="card-sub">模拟成本价下跌路径，生成分批方案</span>
+                </div>
+                <span class="arrow">〉</span>
+            </a>
+
+            <!-- 盈利入口 (占位) -->
+            <a href="#" class="menu-card" style="opacity: 0.6;">
+                <div class="card-icon" style="background: linear-gradient(135deg, #34C759, #4CD964);">💵</div>
+                <div class="card-content">
+                    <span class="card-title">盈利预演</span>
+                    <span class="card-sub">即将推出：模拟分批止盈的最佳路径</span>
+                </div>
+                <span class="arrow">〉</span>
+            </a>
+        </div>
     </div>
 
-    <!-- 页面列表 -->
-    <a href="plan.html" class="content-card">
-        <div class="card-info">
-            <h3>📈 基金加仓计划</h3>
-            <p>基于成本跌幅的精密计算</p>
-        </div>
-        <div class="arrow">〉</div>
-    </a>
-
-    <a href="profit.html" class="content-card">
-        <div class="card-info">
-            <h3>💰 盈利预演</h3>
-            <p>模拟未来止盈方案</p>
-        </div>
-        <div class="arrow">〉</div>
-    </a>
-
-    <!-- 底部导航栏 -->
+    <!-- 底部 Tab Bar -->
     <nav class="tab-bar">
-        <a href="index.html" class="tab-item active">
-            <span class="tab-icon">🧭</span>
+        <a href="index.html" class="tab-btn active">
+            <div class="tab-icon">🧭</div>
             <span>探索</span>
         </a>
-        <a href="plan.html" class="tab-item">
-            <span class="tab-icon">📊</span>
-            <span>加仓计划</span>
+        <a href="plan.html" class="tab-btn">
+            <div class="tab-icon">📊</div>
+            <span>计划</span>
         </a>
-        <a href="profit.html" class="tab-item">
-            <span class="tab-icon">💵</span>
-            <span>盈利预演</span>
-        </a>
-        <a href="settings.html" class="tab-item">
-            <span class="tab-icon">⚙️</span>
-            <span>设置</span>
+        <a href="#" class="tab-btn">
+            <div class="tab-icon">👤</div>
+            <span>我的</span>
         </a>
     </nav>
 
     <script>
-        // 检测系统深色模式预设
+        // 检测系统色调
         if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
             document.body.setAttribute('data-theme', 'dark');
         }
